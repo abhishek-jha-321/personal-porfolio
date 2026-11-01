@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #0a0b0e;
+  --color-surface: #121316;
+  --color-surface-dim: #121316;
+  --color-surface-bright: #38393c;
+  --color-surface-lowest: #0d0e11;
+  --color-surface-low: #1b1b1f;
+  --color-surface-container: #1f1f23;
+  --color-surface-high: #292a2d;
+  --color-surface-highest: #343538;
+  
+  --color-ember-primary: #ff5722;
+  --color-ember-primary-light: #ffb5a0;
+  --color-ember-secondary: #ec6a06;
+  --color-ember-tertiary: #d97722;
+  --color-ember-glow: rgba(255, 87, 34, 0.16);
+  
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #e4beb4;
+  --color-text-dim: #475569;
+  
+  --color-outline-subtle: rgba(255, 255, 255, 0.07);
+  --color-outline-glow: rgba(255, 87, 34, 0.35);
+
+  --font-display: var(--font-jakarta), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+  --font-mono-tech: var(--font-space), monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #0a0b0e;
+  color: #f8fafc;
+}
+
+body {
+  font-family: var(--font-inter), sans-serif;
+  background-color: #0a0b0e;
+  color: #f8fafc;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism Card matching Stitch Design */
+.card-glass {
+  background: rgba(18, 19, 24, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-glass:hover {
+  border-color: rgba(255, 87, 34, 0.35);
+  box-shadow: 0 0 24px rgba(255, 87, 34, 0.12);
+}
+
+/* Primary Ember Action Button */
+.btn-ember {
+  background: #ff5722;
+  box-shadow: 0 2px 12px rgba(255, 87, 34, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-ember:hover {
+  background: #f4511e;
+  box-shadow: 0 4px 24px rgba(255, 87, 34, 0.55);
+  transform: translateY(-1px);
+}
+
+.btn-ember:active {
+  transform: scale(0.98);
+}
+
+/* Glass Outline Button */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-glass:hover {
+  background: rgba(255, 87, 34, 0.1);
+  border-color: rgba(255, 87, 34, 0.4);
+  color: #ffffff;
+}
+
+/* Atmospheric Ambient Orbs */
+.bg-aura-glow {
+  background: radial-gradient(circle at 50% 25%, rgba(255, 87, 34, 0.16), rgba(217, 119, 34, 0.04) 50%, transparent 80%);
+}
+
+/* Custom modern scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0b0e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f1f23;
+  border-radius: 9999px;
+  border: 2px solid #0a0b0e;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff5722;
+}
