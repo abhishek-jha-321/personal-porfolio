@@ -36,13 +36,22 @@ interface MessageItem {
 
 export default function AdminDashboardPage() {
   const [messages, setMessages] = useState<MessageItem[]>([]);
-  const [stats, setStats] = useState({ total: 0, unread: 0, totalPhoneNumbers: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<"all" | "unread" | "read" | "replied">("all");
   const [search, setSearch] = useState("");
   const [dbSource, setDbSource] = useState<string>("detecting...");
   const router = useRouter();
+
+  // Dynamically compute stats from messages so counts always stay 100% in sync
+  const stats = useMemo(() => {
+    const total = messages.length;
+    const unread = messages.filter((m) => m.status === "unread").length;
+    const totalPhoneNumbers = messages.filter(
+      (m) => Boolean(m.phone && m.phone.trim().length > 0)
+    ).length;
+    return { total, unread, totalPhoneNumbers };
+  }, [messages]);
 
   const fetchMessages = async () => {
     setLoading(true);
@@ -58,7 +67,6 @@ export default function AdminDashboardPage() {
         throw new Error(data.error || "Failed to fetch messages.");
       }
       setMessages(data.messages || []);
-      setStats(data.stats || { total: 0, unread: 0, totalPhoneNumbers: 0 });
       if (data.messages && data.messages.length > 0) {
         setDbSource(data.messages[0].source === "mongodb" ? "MongoDB Atlas" : "Local Storage (Active)");
       } else {
@@ -86,13 +94,6 @@ export default function AdminDashboardPage() {
         setMessages((prev) =>
           prev.map((m) => (m._id === id ? { ...m, status: newStatus } : m))
         );
-        setStats((prev) => ({
-          ...prev,
-          unread:
-            newStatus === "unread"
-              ? prev.unread + 1
-              : Math.max(0, prev.unread - (messages.find((m) => m._id === id)?.status === "unread" ? 1 : 0)),
-        }));
       }
     } catch (err) {
       console.error("Status update error:", err);
@@ -106,12 +107,8 @@ export default function AdminDashboardPage() {
         method: "DELETE",
       });
       if (res.ok) {
+        // Removing from messages automatically updates total, unread, and totalPhoneNumbers
         setMessages((prev) => prev.filter((m) => m._id !== id));
-        setStats((prev) => ({
-          ...prev,
-          total: Math.max(0, prev.total - 1),
-          unread: Math.max(0, prev.unread - 1),
-        }));
       }
     } catch (err) {
       console.error("Delete error:", err);

@@ -62,14 +62,9 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleLogin} className="space-y-4 sm:space-y-5">
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-mono text-[#e3e2e6] uppercase tracking-wider">
-                Admin Passcode
-              </label>
-              <span className="text-[10px] text-[#ffb5a0] font-mono">
-                (admin123 or abhi7890)
-              </span>
-            </div>
+            <label className="block text-xs font-mono text-[#e3e2e6] mb-1.5 uppercase tracking-wider">
+              Admin Passcode
+            </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#94a3b8]">
                 <KeyRound className="w-4 h-4" />
@@ -80,7 +75,7 @@ export default function AdminLoginPage() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck="false"
-                placeholder="Enter passcode"
+                placeholder="Enter secret passcode"
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl bg-[#0e0f14] border border-white/[0.1] text-[#f8fafc] placeholder-[#475569] text-xs sm:text-sm focus:outline-none focus:border-[#ff5722] focus:ring-1 focus:ring-[#ff5722] transition-colors"

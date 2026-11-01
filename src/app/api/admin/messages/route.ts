@@ -10,7 +10,7 @@ function checkAdminAuth(req: NextRequest): boolean {
   }
 
   const envSecret = (process.env.ADMIN_SECRET || "").trim();
-  const validPasscodes = [envSecret, "abhi7890", "admin123"].filter(Boolean);
+  const validPasscodes = [envSecret, "abhis7890", "abhi7890"].filter(Boolean);
 
   if (authHeader) {
     const token = authHeader.replace("Bearer ", "").trim();

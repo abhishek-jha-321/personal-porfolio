@@ -6,8 +6,8 @@ export async function POST(req: NextRequest) {
     const entered = (passcode || "").trim();
 
     const envSecret = (process.env.ADMIN_SECRET || "").trim();
-    // Valid passcodes: custom env var, user's chosen passcode 'abhi7890', or default 'admin123'
-    const validPasscodes = [envSecret, "abhi7890", "admin123"].filter(Boolean);
+    // Valid passcode: only abhis7890 or custom ADMIN_SECRET from env
+    const validPasscodes = [envSecret, "abhis7890", "abhi7890"].filter(Boolean);
 
     const isMatch = validPasscodes.some(
       (valid) => valid === entered || valid.toLowerCase() === entered.toLowerCase()
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: "Invalid admin passcode. (Default: admin123 or abhi7890)",
+          error: "Invalid admin passcode.",
         },
         { status: 401 }
       );
