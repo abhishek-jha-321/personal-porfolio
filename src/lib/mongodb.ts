@@ -1,10 +1,8 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
 interface MongooseCache {
   conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
+  promise: Promise<typeof mongoose | null> | null;
 }
 
 declare global {
@@ -19,8 +17,10 @@ if (!global.mongooseCache) {
 }
 
 export async function connectToDatabase() {
-  if (!MONGODB_URI) {
-    // If MONGODB_URI is not set in .env.local yet, return null
+  const uri = (process.env.MONGODB_URI || "").trim();
+
+  if (!uri || uri.length === 0) {
+    // If MONGODB_URI is not set yet, return null for graceful fallback
     return null;
   }
 
@@ -31,20 +31,29 @@ export async function connectToDatabase() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
-      return mongooseInstance;
-    });
+    cached.promise = mongoose
+      .connect(uri, opts)
+      .then((mongooseInstance) => {
+        console.log("Successfully connected to MongoDB Atlas");
+        return mongooseInstance;
+      })
+      .catch((err) => {
+        console.error("MongoDB Atlas connection error:", err.message);
+        cached.promise = null;
+        return null;
+      });
   }
 
   try {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
-    throw e;
+    console.error("Failed to resolve MongoDB connection:", e);
+    return null;
   }
 
   return cached.conn;
 }
-

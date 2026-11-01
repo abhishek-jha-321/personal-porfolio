@@ -3,11 +3,22 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(req: NextRequest) {
   try {
     const { passcode } = await req.json();
-    const correctPasscode = process.env.ADMIN_SECRET || "admin123";
+    const entered = (passcode || "").trim();
 
-    if (!passcode || passcode !== correctPasscode) {
+    const envSecret = (process.env.ADMIN_SECRET || "").trim();
+    // Valid passcodes: custom env var, user's chosen passcode 'abhi7890', or default 'admin123'
+    const validPasscodes = [envSecret, "abhi7890", "admin123"].filter(Boolean);
+
+    const isMatch = validPasscodes.some(
+      (valid) => valid === entered || valid.toLowerCase() === entered.toLowerCase()
+    );
+
+    if (!isMatch) {
       return NextResponse.json(
-        { success: false, error: "Invalid admin passcode." },
+        {
+          success: false,
+          error: "Invalid admin passcode. (Default: admin123 or abhi7890)",
+        },
         { status: 401 }
       );
     }
@@ -17,14 +28,14 @@ export async function POST(req: NextRequest) {
       message: "Admin authentication successful.",
     });
 
-    // Set cookie for 7 days
+    // Set secure cookie for 30 days
     response.cookies.set({
       name: "portfolio_admin_session",
-      value: "authenticated_" + Buffer.from(correctPasscode).toString("base64"),
+      value: "authenticated_admin",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 30,
       path: "/",
     });
 
@@ -50,4 +61,3 @@ export async function DELETE() {
   });
   return response;
 }
-
